@@ -8,3 +8,7 @@ export function dict22arr(dict) {
   }
   return [keys, values];
 }
+
+export function utf8Decode(s: string) {
+  return decodeURIComponent(escape(s));
+}

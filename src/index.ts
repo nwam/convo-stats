@@ -1,6 +1,8 @@
-import {Chart} from 'chart.js';
+import {Convo} from './convo';
+import {Message} from './message';
 import {getMessageCount} from './process';
 import * as util from './util';
+import {Chart} from 'chart.js';
 
 window.onload = () => {
   let chartCtx = document.getElementById('chart');
@@ -19,21 +21,21 @@ window.onload = () => {
     let fileReader = new FileReader();
     fileReader.onload = (evt) => {
       let data = JSON.parse(evt.target.result); 
-      console.log(data);
-      processData(data);
+      console.log('JSON loaded');
+      const convo = new Convo(data);
+      console.log('Convo created');
+      processConvo(convo);
     };
     fileReader.readAsText(evt.target.files[0]);
   }
 
-  function processData(data) {
-    let messageCount = getMessageCount(data);
+  function processConvo(convo) {
+    let messageCount = convo.getMessageCount();
     let [senders, counts] = util.dict22arr(messageCount);
 
     chart.config.data.labels = senders;
     chart.data.datasets[0].data = counts;
     chart.update();
-
-    return [senders, counts];
   }
 };
 
