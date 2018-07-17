@@ -5,12 +5,13 @@ import * as util from './util';
 import {Chart} from 'chart.js';
 
 window.onload = () => {
-  let chartCtx = document.getElementById('chart');
+  let messageCountChartCtx = document.getElementById('message-count-chart');
+  let tokenCountChartCtx = document.getElementById('token-count-chart');
   let fileInput = document.getElementById('file-input');
 
   fileInput.onchange = processFile;
-  let chart = new Chart(chartCtx, chartInit);
-
+  let messageCountChart = new Chart(messageCountChartCtx, chartInit());
+  let tokenCountChart = new Chart(tokenCountChartCtx, chartInit());
 
   function processFile(evt) {
     let file = evt.target.files[0];
@@ -31,15 +32,23 @@ window.onload = () => {
 
   function processConvo(convo) {
     let messageCount = convo.getMessageCount();
-    let [senders, counts] = util.dict22arr(messageCount);
+    let [senders, messageCounts] = util.dict22arr(messageCount);
+    messageCountChart.config.data.labels = senders;
+    messageCountChart.data.datasets[0].data = messageCounts;
+    messageCountChart.update();
 
-    chart.config.data.labels = senders;
-    chart.data.datasets[0].data = counts;
-    chart.update();
+    let tokenCount = convo.getTokenCount();
+    let tokenCounts = util.dict22arr(tokenCount)[1];
+    tokenCountChart.config.data.labels = senders;
+    tokenCountChart.data.datasets[0].data = tokenCounts;
+    tokenCountChart.data.datasets[0].label = 'Total words';
+    tokenCountChart.update();
+
   }
 };
 
-let chartInit = {
+
+let chartInit = () => return {
   type: 'bar',
   data: {
     labels: ["Red", "Blue", "Yellow", "Green"],

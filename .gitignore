@@ -2,3 +2,4 @@ data/*
 facebook_data/*
 dist/*
 node_modules/*
+*.swp

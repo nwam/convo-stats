@@ -1,6 +1,6 @@
 import {utf8Decode} from './util';
 
-enum MediaType {
+export enum MediaType {
   Textual,
   Photo,
   Video,
@@ -22,12 +22,6 @@ export class Message {
     this.mediaType = getMediaType(message);
     this.content = getContent(message, this.mediaType);
     this.extras = getExtras(message);
-  }
-
-  tokenizeContent() {
-    if (this.mediaType == MediaType.Textual) {
-      this.content = this.content.split(' ');
-    }
   }
 
 }
@@ -53,7 +47,8 @@ function getMediaType(message): MediaType {
 
 function getContent(message, mediaType: MediaType): any {
   switch (mediaType) {
-    case MediaType.Textual: {return utf8Decode(message.content);}
+    case MediaType.Textual: {
+      return utf8Decode(message.content).split(/\s+/);}
     case MediaType.Photo: {return message.photos;}
     case MediaType.Video: {return message.videos;}
     case MediaType.Gif: {return message.gifs;}

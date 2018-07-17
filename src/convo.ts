@@ -1,4 +1,4 @@
-import {Message} from './message';
+import {Message, MediaType} from './message';
 
 import {utf8Decode} from './util';
 
@@ -21,6 +21,16 @@ export class Convo {
     return messageCount;
   }
 
+  getTokenCount() {
+    let tokenCount = this.createParticipantDict(0);
+    for (const message of this.messages) {
+      if (message.mediaType == MediaType.Textual) {
+        tokenCount[message.sender] += message.content.length;
+      }
+    }
+    return tokenCount;
+  }
+
   private createParticipantDict(obj) {
     let d = {};
     this.participants.forEach( participant => {
@@ -28,6 +38,7 @@ export class Convo {
     });
     return d;
   }
+
   private setParticipants() {
     let participants = new Set();
     for (const message of this.messages) {
@@ -35,6 +46,7 @@ export class Convo {
     }
     this.participants = participants;
   }
+
 }
 
 /** Functions for scraping info out of Messenger JSON */
