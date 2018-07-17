@@ -14,27 +14,75 @@ export class Convo {
   }
 
   getMessageCount() {
-    let messageCount = this.createParticipantDict(0);
+    let messageCount = this.createParticipantDict(Number);
     for (const message of this.messages) {
       messageCount[message.sender]++;
     }
     return messageCount;
   }
 
-  getTokenCount() {
-    let tokenCount = this.createParticipantDict(0);
+  getTokenSummary(regex = /.*/) {
+    let summary = this.createParticipantDict(Number);
     for (const message of this.messages) {
       if (message.mediaType == MediaType.Textual) {
-        tokenCount[message.sender] += message.content.length;
+        for (const token of message.content) {
+          if (regex.test(token)) {
+            summary[message.sender]++;
+          }
+        }
       }
     }
-    return tokenCount;
+    return summary;
   }
 
-  private createParticipantDict(obj) {
+  getTokenCount(regex = /.*/) {
+    let counts = this.createParticipantDict(Array);
+    let tokens = {};
+    let numTokens = 0;
+    for (const message of this.messages) {
+      if (message.mediaType == MediaType.Textual) {
+        for (const token of message.content) {
+          if (regex.test(token)) {
+
+            // Token matched regex
+            if (! tokens[token]) {
+              tokens[token] = numTokens++;
+              for (const participant in counts) {
+                counts[participant].push(0);
+              }
+            }            
+            const tokenId = tokens[token];
+            counts[message.sender][tokenId]++;
+          }
+        }
+      }
+    }
+    const tokenArray = new Array(numTokens);
+    for (const tokenName in tokens) {
+      tokenArray[tokens[tokenName]] = tokenName;
+    }
+    return [tokenArray, counts];
+  }
+
+  getTokenCount2(regex = /.*/) {
+    let counts = {};
+    for (const message of this.messages) {
+      if (message.mediaType == MediaType.Textual) {
+        for (const token of message.content) {
+          if (regex.test(token)) {
+            token in counts || (counts[token] = this.createParticipantDict(0));
+            counts[token][message.sender]++;
+          }
+        }
+      }
+    }
+    return counts;
+  }
+
+  private createParticipantDict(constr) {
     let d = {};
-    this.participants.forEach( participant => {
-      d[participant] = obj;
+    this.participants.forEach(participant => {
+      d[participant] = new constr;
     });
     return d;
   }
