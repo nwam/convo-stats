@@ -1,8 +1,9 @@
-import {loadJson} from './testUtil';
+import {loadTestJson} from './testUtil';
 import {Message} from '../src/message';
 
-let data = loadJson();
+let data = loadTestJson();
 
 let message = new Message(data.messages[0]);
-message.tokenizeContent();
-console.log(message.content);
+for (let character of message.content[10]) {
+  console.log(character);
+}

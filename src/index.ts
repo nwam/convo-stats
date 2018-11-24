@@ -4,6 +4,19 @@ import {getMessageCount} from './process';
 import * as util from './util';
 import {Chart} from 'chart.js';
 
+const bgColors = [
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+  'rgba(255, 206, 86, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+]
+const colors = [
+  'rgba(255,99,132,1)',
+  'rgba(54, 162, 235, 1)',
+  'rgba(255, 206, 86, 1)',
+  'rgba(75, 192, 192, 1)',
+]
+
 window.onload = () => {
   let messageCountChartCtx = document.getElementById('message-count-chart');
   let tokenSummaryChartCtx = document.getElementById('token-count-chart');
@@ -23,7 +36,7 @@ window.onload = () => {
 
     let fileReader = new FileReader();
     fileReader.onload = (evt) => {
-      let data = JSON.parse(evt.target.result); 
+      let data = JSON.parse(evt.target.result);
       console.log('JSON loaded');
       const convo = new Convo(data);
       console.log('Convo created');
@@ -53,6 +66,8 @@ window.onload = () => {
       hashtagCountChart.data.datasets.push({
         label: participant,
         data: hashtagCounts[participant],
+        //backgroundColor: bgColors[i],
+        //borderColor: colors[i]
       });
     }
     hashtagCountChart.update();
@@ -68,18 +83,8 @@ let chartInit = () => {
       datasets: [{
         label: 'Total messages',
         data: [12, 19, 3, 5],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-        ],
+        backgroundColor: bgColors,
+        borderColor: colors,
         borderWidth: 1
       }]
     },
@@ -97,7 +102,7 @@ let chartInit = () => {
 
 let countChartInit = () => {
   return {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
       labels: ['Broccoli', 'Carrots', 'Cheese'],
       datasets: [
